@@ -1,0 +1,12 @@
+road
+garden
+beach
+room
+park
+street
+shelter
+chair
+table
+bag
+tree
+forest

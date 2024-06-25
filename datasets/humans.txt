@@ -1,0 +1,18 @@
+man
+woman
+girl 
+boy
+child
+couple
+guy
+doctor
+nurse
+teacher
+lawyer
+mother
+father
+kid
+professor
+student
+group of friends
+celebrity

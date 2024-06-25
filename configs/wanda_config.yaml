@@ -1,0 +1,13 @@
+hook_module: 'unet'
+target: 'Van Gogh'
+base: 'things'
+keep_nsfw: false
+skill_ratio: 0.01
+res_path: 'results/stable-diffusion'
+model_id: 'runwayml/stable-diffusion-v1-5'
+n_layers: 16
+fine_tuned_unet: null
+gpu: 5
+seed: 0
+timesteps: 51
+dbg: false
