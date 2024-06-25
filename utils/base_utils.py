@@ -32,6 +32,9 @@ def make_dirs(args):
         os.makedirs(args.checkpoint_path)
         os.mkdir(os.path.join(args.checkpoint_path, 'test_images'))
     
+    if not os.path.exists(args.benchmarking_result_path):
+        os.makedirs(args.benchmarking_result_path)
+    
 
 def get_sd_model(args):
     if args.model_id in ['runwayml/stable-diffusion-v1-5', 'CompVis/stable-diffusion-v1-4']:

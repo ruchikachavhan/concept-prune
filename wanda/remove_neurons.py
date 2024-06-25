@@ -55,7 +55,7 @@ def remove_skilled_neurons(target_prompts, model, neuron_remover, args, save_pat
 
 def input_args():
     parser = ArgumentParser()
-    parser.add_argument('--gpu', type=str, default=None)
+    parser.add_argument('--gpu', type=int, default=None)
     parser.add_argument('--dbg', type=bool, default=None)
     parser.add_argument('--target', type=str, default=None)
     parser.add_argument('--base', type=str, default=None)
