@@ -1,4 +1,4 @@
-hook_module: 'unet'
+hook_module: 'text'
 target: 'Van Gogh'
 base: 'things'
 keep_nsfw: false

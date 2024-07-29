@@ -34,7 +34,15 @@ best_ckpt_dict = {
     'Salvador Dali': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'Leonardo Da Vinci': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'naked': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/naked/checkpoints/skill_ratio_0.01_timesteps_9_threshold0.0.pt',
-    'parachute': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/parachute/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt',
+    'parachute': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/parachute/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'cassette player': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/cassette player/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'golf ball': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/golf ball/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'french horn': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/french horn/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'garbage truck': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/garbage truck/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'chain saw': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/chain saw/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'english springer': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/english springer/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'tench': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/tench/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'gas pump': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/gas pump/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'female': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/female/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'male': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt"
 }

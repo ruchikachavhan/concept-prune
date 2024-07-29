@@ -62,7 +62,7 @@ def main():
                 layer_names.append(name)
                 weight = module.fc2.weight.detach().clone()
                 abs_weights[name] = weight.abs().cpu()
-                print("Storing absolute value of: ", name, module.weight.shape)
+                print("Storing absolute value of: ", name, module.fc2.weight.shape)
     # sort the layer names so that mid block is before up block
     layer_names.sort()
     print("Layer names: ", layer_names, len(layer_names))

@@ -37,10 +37,10 @@ class CustomDatasetErasure(torch.utils.data.Dataset):
         # select only prompts that have the concept to remove
         self.prompts = [(self.prompts[i], self.seeds[i], concepts_to_remove) for i in range(len(self.prompts)) if concepts_to_remove.lower() == self.labels[i].lower()]
         
-        print(f"Number of prompts: {len(self.prompts)}")
+        
 
     def __len__(self):
-        return len(self.prompts)
+        return 100
 
     def __getitem__(self, idx):
         prompt = self.prompts[idx][0]
@@ -71,7 +71,7 @@ class CustomDatasetKeep(torch.utils.data.Dataset):
             if label not in labels_dict:
                 labels_dict[label] = 1
                 self.prompts.append((self.dataset[i][0], self.dataset[i][1], self.dataset[i][2]))
-            elif labels_dict[label] < 500:
+            elif labels_dict[label] < 100:
                 labels_dict[label] += 1
                 self.prompts.append((self.dataset[i][0], self.dataset[i][1], self.dataset[i][2]))
             print(labels_dict)
@@ -92,13 +92,13 @@ def main():
     args = input_args()
     print("Arguments: ", args.__dict__)
 
-    args.benchmarking_result_path = os.path.join(args.benchmarking_result_path, args.target, args.baseline, 'benchmarking')
+    args.benchmarking_result_path = os.path.join(args.benchmarking_result_path, args.target, args.baseline, 'benchmarking', f'concept_{args.removal_mode}')
     print("Benchmarking result path: ", args.benchmarking_result_path)
     if not os.path.exists(args.benchmarking_result_path):
         os.makedirs(args.benchmarking_result_path)
 
-    if not os.path.exists(f'{args.benchmarking_result_path}/concept_{args.removal_mode}'):
-        os.makedirs(f'{args.benchmarking_result_path}/concept_{args.removal_mode}')
+    if not os.path.exists(f'{args.benchmarking_result_path}'):
+        os.makedirs(f'{args.benchmarking_result_path}')
 
     # Load dataset
     data = pd.read_csv(f'datasets/imagenette.csv')
@@ -106,6 +106,8 @@ def main():
         dataloader = torch.utils.data.DataLoader(CustomDatasetErasure(data, args.target), batch_size=args.batch_size, shuffle=False)
     else:
         dataloader = torch.utils.data.DataLoader(CustomDatasetKeep(data, args.target), batch_size=args.batch_size, shuffle=False)
+
+    print("Number of prompts: ", len(dataloader))
 
     # Load the concept erased model
     remover_model = load_models(args)
@@ -145,7 +147,7 @@ def main():
                 with torch.no_grad():
                     output = classifier(image)
 
-                s, indices = torch.topk(output, 1)
+                s, indices = torch.topk(output, 5)
                 indices = indices.cpu().numpy()
                 pred_labels = [weights.meta["categories"][idx] for idx in indices[0]]
                 print(f"Predicted labels: {pred_labels}")
