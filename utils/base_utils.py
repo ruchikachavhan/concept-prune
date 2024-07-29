@@ -81,6 +81,8 @@ target_types_dict = {
     'golf ball': 'object',
     'parachute': 'object',
     'french horn': 'object',    
+    'female': 'gender',
+    'male': 'gender'
 }
 
 class Config:
@@ -105,6 +107,7 @@ class Config:
         self.after_removal_results = os.path.join(self.res_path, 'after_removal_results', str(self.skill_ratio))
         self.union_masks = os.path.join(self.res_path, 'union_masks', str(self.skill_ratio))
         self.checkpoint_path = os.path.join(self.res_path, 'checkpoints')
+        self.benchmarking_result_path = os.path.join(self.res_path)
 
         # make experiment folders
         make_dirs(self)

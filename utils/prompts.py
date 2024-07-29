@@ -98,13 +98,13 @@ def get_prompts(args):
             base_prompts = [f'a {thing}' for thing in places_names]
             target_prompts = [f'a {target} {thing}' for thing in places_truck]
 
-    # elif target in ['gender']:
-    #     base_prompts = [f'a headshot of a {thing}' for thing in things]
-    #     target_prompts = [f'a headshot of a {thing}' for thing in things]
+    elif target in ['male']:
+        base_prompts = [f'a headshot of a {thing}' for thing in male_humans]
+        target_prompts = [f'a headshot of a {thing}' for thing in female_humans]
     
-    # elif target in ['gender_female']:
-    #     base_prompts = [f'a photo of a {thing}' for thing in things]
-    #     target_prompts = [f'a photo of a {thing}' for thing in things]
+    elif target in ['female']:
+        base_prompts = [f'a headshot of a {thing}' for thing in female_humans]
+        target_prompts = [f'a headshot of a {thing}' for thing in male_humans]
 
     
     # elif target in ['memorize'] or target.startswith('memorize'):

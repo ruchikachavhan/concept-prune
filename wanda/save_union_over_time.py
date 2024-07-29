@@ -97,12 +97,15 @@ def main():
     model = model.to('cuda')
 
     # test new model on the target prompts
+    test_img_save_path = os.path.join(args.checkpoint_path, f'skill_ratio_{args.skill_ratio}_timesteps_{args.timesteps}_threshold{args.select_ratio}', 'test_images')
+    if not os.path.exists(test_img_save_path):
+        os.makedirs(test_img_save_path)
     for ann_target in target_prompts:
         print("Testing on target prompt: ", ann_target)
         torch.manual_seed(args.seed)
         np.random.seed(args.seed)
         out = model(ann_target).images[0]
-        out.save(os.path.join(args.checkpoint_path, 'test_images', f'{ann_target}.png'))
+        out.save(os.path.join(test_img_save_path, f'{ann_target}.png'))
 
 
 if __name__ == '__main__':

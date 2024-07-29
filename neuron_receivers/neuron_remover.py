@@ -3,7 +3,6 @@ import torch
 import pickle
 import numpy as np
 from diffusers.models.activations import GEGLU
-from diffusers.models.activations import LoRACompatibleLinear
 from transformers.models.clip.modeling_clip import CLIPMLP
 from neuron_receivers.base_receiver import BaseNeuronReceiver
 
@@ -41,7 +40,7 @@ class NeuronRemover(BaseNeuronReceiver):
         self.layer = 0
 
     def unet_hook_fn(self, module, input, output):
-        # Linear (LORA compatible layer), second layer of the FFN
+        # Linear, second layer of the FFN
         # change weights by applying the binary mask
         old_weights = module.weight.clone()
         # read the expert indices
@@ -81,7 +80,7 @@ class NeuronRemover(BaseNeuronReceiver):
         if self.hook_module == 'unet':
             num_modules = 0
             for name, module in model.unet.named_modules():
-                if isinstance(module, LoRACompatibleLinear) and 'ff.net' in name and not 'proj' in name:
+                if isinstance(module, torch.nn.Linear) and 'ff.net' in name and not 'proj' in name:
                     hook = module.register_forward_hook(self.unet_hook_fn)
                     num_modules += 1
                     hooks.append(hook)

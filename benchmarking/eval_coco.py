@@ -67,7 +67,6 @@ def main():
         # fix seed before running the model
         torch.manual_seed(0)
         np.random.seed(0)
-
         images = remover_model(prompt).images
         for i, image in enumerate(images):
             image.save(os.path.join(args.benchmarking_result_path, f"removed_{iter * args.batch_size + i}.png"))

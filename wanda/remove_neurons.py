@@ -11,7 +11,6 @@ from PIL import Image, ImageFilter, ImageDraw
 sys.path.append(os.getcwd())
 from utils import get_prompts, Config, get_sd_model
 from neuron_receivers import NeuronRemover
-from diffusers.models.activations import LoRACompatibleLinear
 from transformers.models.clip.modeling_clip import CLIPMLP
 
 
@@ -49,6 +48,7 @@ def remove_skilled_neurons(target_prompts, model, neuron_remover, args, save_pat
         draw = ImageDraw.Draw(new_im)
         draw.text((80, 15), ann_target, (255, 255, 255))
         draw.text((350, 15), 'w/o skilled neurons', (255, 255, 255))
+        print("Saving image in: ", os.path.join(save_path, f'img_{iter}_{ann_target}.jpg'))
         new_im.save(os.path.join(save_path, f'img_{iter}_{ann_target}.jpg'))
         iter += 1
 

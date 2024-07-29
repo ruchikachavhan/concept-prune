@@ -40,7 +40,7 @@ class Wanda(BaseNeuronReceiver):
         args = (1.0,)
         if self.replace_fn == GEGLU:
             # First layer of the FFN
-            hidden_states, gate = module.proj(input[0], *args).chunk(2, dim=-1)
+            hidden_states, gate = module.proj(input[0]).chunk(2, dim=-1)
             out = hidden_states * module.gelu(gate)
 
             # Store the input activation to the second layer

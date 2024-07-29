@@ -10,7 +10,6 @@ from argparse import ArgumentParser
 sys.path.append(os.getcwd())
 from utils import get_prompts, Config, get_sd_model
 from neuron_receivers import Wanda
-from diffusers.models.activations import LoRACompatibleLinear
 from transformers.models.clip.modeling_clip import CLIPMLP
 
 def input_args():
@@ -51,7 +50,7 @@ def main():
 
     if args.hook_module == 'unet':
         for name, module in model.unet.named_modules():
-            if isinstance(module, LoRACompatibleLinear) and 'ff.net' in name and not 'proj' in name:
+            if isinstance(module, torch.nn.Linear) and 'ff.net' in name and not 'proj' in name:
                 layer_names.append(name)
                 weight = module.weight.detach()
                 abs_weights[name] = weight.abs().cpu()
@@ -79,6 +78,13 @@ def main():
             if iter >= 3 and args.dbg:
                 break
             print("text: ", ann, ann_target)
+
+            # if target concept is gender, then we select random seeds
+            if args.target_type == 'gender':
+                seed = torch.randint(0, 250, (1,)).item()
+                neuron_receiver_base.seed = seed
+                neuron_receiver_target.seed = seed
+                print("Seed: ", seed)
            
             neuron_receiver_base.reset_time_layer()
             out = neuron_receiver_base.observe_activation(model, ann)
