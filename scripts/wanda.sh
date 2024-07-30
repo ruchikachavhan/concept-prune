@@ -58,3 +58,7 @@ python benchmarking/object_erase.py --target 'english springer' --baseline conce
 python benchmarking/object_erase.py --target 'tench' --baseline concept-prune --removal_mode keep
 python benchmarking/object_erase.py --target 'chain saw' --baseline concept-prune --removal_mode keep
 python benchmarking/object_erase.py --target 'french horn' --baseline concept-prune --removal_mode keep
+
+
+# python benchmarking/artist_erasure.py --target "Van Gogh" --hook_module 'text' --baseline 'concept-prune' --benchmarking_result_path "results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/"
+# python benchmarking/artist_erasure.py --target "Van Gogh" --hook_module unet-ffn-1 --baseline 'concept-prune' --benchmarking_result_path "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/"

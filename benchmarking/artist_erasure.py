@@ -12,10 +12,11 @@ from diffusers import StableDiffusionPipeline, UNet2DConditionModel
 
 def input_args():
     parser = ArgumentParser()
-    parser.add_argument('--gpu', type=int, default=None)
+    parser.add_argument('--gpu', type=int, default=0)
     parser.add_argument('--dbg', type=bool, default=None)
     parser.add_argument('--target', type=str, default=None)
     parser.add_argument('--baseline', type=str, default=None)
+    parser.add_argument('--hook_module', type=str, default='unet')
     parser.add_argument('--benchmarking_result_path', type=str, default='results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/')
     return parser.parse_args()
 
@@ -50,7 +51,8 @@ def main():
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False)
 
     # Run the model if the folder is empty
-    if len(os.listdir(f'{args.benchmarking_result_path}/concept_erase')) == 0:
+    if True:
+    # len(os.listdir(f'{args.benchmarking_result_path}/concept_erase')) == 0:
         print("Saving images after removal of concept")
         
         # Load original SD model

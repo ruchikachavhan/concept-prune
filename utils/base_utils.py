@@ -47,6 +47,12 @@ def get_sd_model(args):
     elif args.hook_module == 'text':
         num_layers = 12
         replace_fn = CLIPMLP
+    elif args.hook_module == 'unet-ffn-1':
+        num_layers = args.n_layers
+        replace_fn = GEGLU
+    elif args.hook_module == 'attn_key':
+        num_layers = args.n_layers
+        replace_fn = torch.nn.Linear
 
     return model, num_layers, replace_fn
 
@@ -98,6 +104,10 @@ class Config:
             self.res_path = f'results/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
         elif self.hook_module == 'text':
             self.res_path = f'results_CLIP/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
+        elif self.hook_module == 'unet-ffn-1':
+            self.res_path = f'results_FFN-1/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
+        elif self.hook_module == 'attn_key':
+            self.res_path = f'results_attn_key/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
 
     def configure(self): 
         self.target_type = target_types_dict[self.target]    

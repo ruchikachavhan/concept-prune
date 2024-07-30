@@ -84,7 +84,7 @@ def main():
     model = model.to(args.gpu)
 
     neuron_remover = NeuronRemover(seed=args.seed, path_expert_indx=args.skilled_neuron_path,
-                                      T=args.timesteps, n_layers=num_layers, replace_fn=replace_fn)
+                                      T=args.timesteps, n_layers=num_layers, replace_fn=replace_fn, hook_module=args.hook_module)
     print("Neuron remover: ", neuron_remover)
 
     remove_skilled_neurons(target_prompts, model, neuron_remover, args, args.after_removal_results)

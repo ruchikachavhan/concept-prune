@@ -84,6 +84,22 @@ class NeuronRemover(BaseNeuronReceiver):
                     hook = module.register_forward_hook(self.unet_hook_fn)
                     num_modules += 1
                     hooks.append(hook)
+        
+        elif self.hook_module == 'unet-ffn-1':
+            num_modules = 0
+            for name, module in model.unet.named_modules():
+                if isinstance(module, torch.nn.Linear) and 'ff.net' in name and 'proj' in name:
+                    hook = module.register_forward_hook(self.unet_hook_fn)
+                    num_modules += 1
+                    hooks.append(hook)
+        
+        elif self.hook_module == 'attn_key':
+            num_modules = 0
+            for name, module in model.unet.named_modules():
+                if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_k' in name:
+                    hook = module.register_forward_hook(self.unet_hook_fn)
+                    num_modules += 1
+                    hooks.append(hook)
 
         elif self.hook_module == 'text':
             num_modules = 0

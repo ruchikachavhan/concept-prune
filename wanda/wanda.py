@@ -55,6 +55,29 @@ def main():
                 weight = module.weight.detach()
                 abs_weights[name] = weight.abs().cpu()
                 print("Storing absolute value of: ", name, module.weight.shape)
+        # sort the layer names so that mid block is before up block
+        layer_names.sort()
+    
+    elif args.hook_module == 'unet-ffn-1':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'ff.net' in name and 'proj' in name:
+                layer_names.append(name)
+                weight = module.weight.detach()
+                abs_weights[name] = weight.abs().cpu()
+                print("Storing absolute value of: ", name, module.weight.shape)
+        # sort the layer names so that mid block is before up block
+        layer_names.sort()
+
+    elif args.hook_module == 'attn_key':
+        for name, module in model.unet.named_modules():
+            # Key of Cross attention (attn2)
+            if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_k' in name:
+                layer_names.append(name)
+                weight = module.weight.detach()
+                abs_weights[name] = weight.abs().cpu()
+                print("Storing absolute value of: ", name, module.weight.shape)
+        # sort the layer names so that mid block is before up block
+        layer_names.sort()
 
     elif args.hook_module == 'text':
         for name, module in model.text_encoder.named_modules():
@@ -63,10 +86,8 @@ def main():
                 weight = module.fc2.weight.detach().clone()
                 abs_weights[name] = weight.abs().cpu()
                 print("Storing absolute value of: ", name, module.fc2.weight.shape)
-    # sort the layer names so that mid block is before up block
-    layer_names.sort()
+    
     print("Layer names: ", layer_names, len(layer_names))
-               
     # Make two separate norm calculator classes for base and adj prompts
     neuron_receiver_base = Wanda(args.seed, args.timesteps, num_layers, replace_fn = args.replace_fn, keep_nsfw = args.keep_nsfw, hook_module=args.hook_module)
     neuron_receiver_target = Wanda(args.seed, args.timesteps, num_layers, replace_fn = args.replace_fn, keep_nsfw = args.keep_nsfw, hook_module=args.hook_module)
@@ -101,7 +122,7 @@ def main():
             iter += 1
         
         # get the norms
-        if args.hook_module == 'unet':
+        if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
             act_norms_base = neuron_receiver_base.activation_norm.get_column_norms()
             act_norms_target = neuron_receiver_target.activation_norm.get_column_norms()
             # save

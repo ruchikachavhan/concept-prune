@@ -41,13 +41,37 @@ def main():
 
     # get names of layers
     weights_shape = {}
-    for name, module in model.unet.named_modules():
-        if isinstance(module, torch.nn.Linear) and 'ff.net' in name and not 'proj' in name:
-            weights_shape[name] = module.weight.shape
+    if args.hook_module == 'unet':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'ff.net' in name and not 'proj' in name:
+                weights_shape[name] = module.weight.shape
+        # sort keys in alphabetical order and ensure that the order is consistent
+        weights_shape = dict(sorted(weights_shape.items()))
+        layer_names = list(weights_shape.keys())
+    
+    elif args.hook_module == 'unet-ffn-1':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'ff.net' in name and 'proj' in name:
+                weights_shape[name] = module.weight.shape
+        # sort keys in alphabetical order and ensure that the order is consistent
+        weights_shape = dict(sorted(weights_shape.items()))
+        layer_names = list(weights_shape.keys())
 
-    # sort keys in alphabetical order and ensure that the order is consistent
-    weights_shape = dict(sorted(weights_shape.items()))
-    layer_names = list(weights_shape.keys())
+    elif args.hook_module == 'attn_key':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_k' in name:
+                weights_shape[name] = module.weight.shape
+        # sort keys in alphabetical order and ensure that the order is consistent
+        weights_shape = dict(sorted(weights_shape.items()))
+        layer_names = list(weights_shape.keys())
+
+    elif args.hook_module == 'text':
+        for name, module in model.text_encoder.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'mlp' in name and 'encoder.layers' in name and 'fc2' in name:
+                weights_shape[name] = module.weight.shape
+        weights_shape = dict(weights_shape.items())
+        layer_names = list(weights_shape.keys())
+
     print("Layer names: ", layer_names)
     print("Weights shape: ", weights_shape)
     masks = {}
@@ -73,16 +97,42 @@ def main():
     
     # apply masks to the model weights and save the model
     print("Applying masks to the model")
-    for name, module in model.unet.named_modules():
-        if isinstance(module, torch.nn.Linear) and 'ff.net' in name and not 'proj' in name:
-            weight = module.weight.data.clone().detach().cpu()
-            weight *= (1- masks[name])
-            weight = weight.to(torch.float16)
-            module.weight.data = weight
+    if args.hook_module == 'unet':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'ff.net' in name and not 'proj' in name:
+                weight = module.weight.data.clone().detach().cpu()
+                weight *= (1- masks[name])
+                weight = weight.to(torch.float16)
+                module.weight.data = weight
+    elif args.hook_module == 'unet-ffn-1':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'ff.net' in name and 'proj' in name:
+                weight = module.weight.data.clone().detach().cpu()
+                weight *= (1- masks[name])
+                weight = weight.to(torch.float16)
+                module.weight.data = weight
+    elif args.hook_module == 'attn_key':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_k' in name:
+                weight = module.weight.data.clone().detach().cpu()
+                weight *= (1- masks[name])
+                weight = weight.to(torch.float16)
+                module.weight.data = weight
+    elif args.hook_module == 'text':
+        for name, module in model.text_encoder.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'mlp' in name and 'encoder.layers' in name and 'fc2' in name:
+                print("Applying mask to: ", name)
+                weight = module.weight.data.clone().detach().cpu()
+                weight *= (1- masks[name])
+                weight = weight.to(torch.float16)
+                module.weight.data = weight
 
     # save the model
     ckpt_name = os.path.join(args.checkpoint_path, f'skill_ratio_{args.skill_ratio}_timesteps_{args.timesteps}_threshold{args.select_ratio}.pt')
-    torch.save(model.unet.state_dict(), ckpt_name)
+    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
+        torch.save(model.unet.state_dict(), ckpt_name)
+    elif args.hook_module == 'text':
+        torch.save(model.text_encoder.state_dict(), ckpt_name)
 
     print("Model saved at: ", ckpt_name)
     del model
@@ -91,9 +141,14 @@ def main():
     _, target_prompts = get_prompts(args)
 
     # load the masked model
-    unet = UNet2DConditionModel.from_pretrained(args.model_id, subfolder="unet", torch_dtype=torch.float16)
-    unet.load_state_dict(torch.load(ckpt_name))
-    model = StableDiffusionPipeline.from_pretrained(args.model_id, unet=unet, torch_dtype=torch.float16)
+    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
+        unet = UNet2DConditionModel.from_pretrained(args.model_id, subfolder="unet", torch_dtype=torch.float16)
+        unet.load_state_dict(torch.load(ckpt_name))
+        model = StableDiffusionPipeline.from_pretrained(args.model_id, unet=unet, torch_dtype=torch.float16)
+    elif args.hook_module == 'text':
+        model = StableDiffusionPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16)
+        print("Loading model from: ", ckpt_name)
+        model.text_encoder.load_state_dict(torch.load(ckpt_name))
     model = model.to('cuda')
 
     # test new model on the target prompts

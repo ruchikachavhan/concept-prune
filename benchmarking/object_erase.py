@@ -20,6 +20,7 @@ def input_args():
     parser.add_argument('--baseline', type=str, default=None)
     parser.add_argument('--benchmarking_result_path', type=str, default='results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/')
     parser.add_argument('--removal_mode', type=str, default=None, choices=['erase', 'keep'])
+    parser.add_argument('--hook_module', type=str, default='unet')
     parser.add_argument('--batch_size', type=int, default=1)
     return parser.parse_args()
 
@@ -126,34 +127,36 @@ def main():
         if args.dbg and iter > 10:
             break
         # check if image is present in putput path
-        if os.path.exists(os.path.join(args.benchmarking_result_path, f"original_{iter * args.batch_size}.png")):
-            continue
+        # if True:
+        # # os.path.exists(os.path.join(args.benchmarking_result_path, f"original_{iter * args.batch_size}.png")):
+        #     continue
 
-        else:
-            print(f"Prompt: {prompt}, Seed: {seed}, Label: {label}")
-            prompt = prompt[0]
-            label = label[0]
-            torch.manual_seed(seed[0])
-            np.random.seed(seed[0])
-            removal_images = remover_model(prompt)
-            # save images
-            for i, image in enumerate(removal_images.images):
-                image.save(os.path.join(args.benchmarking_result_path, f"removed_{iter * args.batch_size + i}.png"))
+        # else:
+        print(f"Prompt: {prompt}, Seed: {seed}, Label: {label}")
+        prompt = prompt[0]
+        label = label[0]
+        torch.manual_seed(seed[0])
+        np.random.seed(seed[0])
+        removal_images = remover_model(prompt)
+        # save images
+        for i, image in enumerate(removal_images.images):
+            image.save(os.path.join(args.benchmarking_result_path, f"removed_{iter * args.batch_size + i}.png"))
 
-            # evaluation using resnet50
-            for i, image in enumerate(removal_images.images):
-                image = preprocess(image).unsqueeze(0)
-                image = image.to(args.gpu)
-                with torch.no_grad():
-                    output = classifier(image)
+        # evaluation using resnet50
+        for i, image in enumerate(removal_images.images):
+            image = preprocess(image).unsqueeze(0)
+            image = image.to(args.gpu)
+            with torch.no_grad():
+                output = classifier(image)
 
-                s, indices = torch.topk(output, 5)
-                indices = indices.cpu().numpy()
-                pred_labels = [weights.meta["categories"][idx] for idx in indices[0]]
-                print(f"Predicted labels: {pred_labels}")
+            s, indices = torch.topk(output, 5)
+            indices = indices.cpu().numpy()
+            pred_labels = [weights.meta["categories"][idx] for idx in indices[0]]
+            print(f"Predicted labels: {pred_labels}")
+            pred_labels = [l.lower() for l in pred_labels]
 
-                if label in pred_labels:
-                    avg_acc += 1
+            if label in pred_labels:
+                avg_acc += 1
 
     print("Object predicted in: %d/%d images" % (avg_acc, len(dataloader)))
     print(f"Average accuracy: {avg_acc / len(dataloader)}")
