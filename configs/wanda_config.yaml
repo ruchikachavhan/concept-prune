@@ -1,4 +1,4 @@
-hook_module: 'unet-ffn-1'
+hook_module: 'unet'
 target: 'Van Gogh'
 base: 'things'
 keep_nsfw: false

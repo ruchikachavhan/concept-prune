@@ -51,8 +51,7 @@ def main():
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False)
 
     # Run the model if the folder is empty
-    if True:
-    # len(os.listdir(f'{args.benchmarking_result_path}/concept_erase')) == 0:
+    if len(os.listdir(f'{args.benchmarking_result_path}/concept_erase')) == 0:
         print("Saving images after removal of concept")
         
         # Load original SD model

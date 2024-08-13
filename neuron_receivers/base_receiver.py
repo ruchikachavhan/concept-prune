@@ -75,9 +75,6 @@ class BaseNeuronReceiver:
                     hook = module.register_forward_hook(self.text_hook_fn)
                     num_modules += 1
                     hooks.append(hook)
-
-        
-                
                 
         # forward pass
         #  fix seed to get the same output for every run

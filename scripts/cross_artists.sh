@@ -1,0 +1,15 @@
+# python benchmarking/artist_erasure.py --target "Monet" --hook_module 'unet' --baseline 'concept-prune' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+# python benchmarking/artist_erasure.py --target "Pablo Picasso" --hook_module 'unet' --baseline 'concept-prune' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+# python benchmarking/artist_erasure.py --target "Salvador Dali" --hook_module 'unet' --baseline 'concept-prune' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+# python benchmarking/artist_erasure.py --target "Leonardo Da Vinci" --hook_module 'unet' --baseline 'concept-prune' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+
+# python benchmarking/artist_erasure.py --target "Monet" --hook_module 'unet' --baseline 'baseline' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+# python benchmarking/artist_erasure.py --target "Pablo Picasso" --hook_module 'unet' --baseline 'baseline' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+# python benchmarking/artist_erasure.py --target "Salvador Dali" --hook_module 'unet' --baseline 'baseline' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+# python benchmarking/artist_erasure.py --target "Leonardo Da Vinci" --hook_module 'unet' --baseline 'baseline' --model_id 'CompVis/stable-diffusion-v1-4'  --ckpt_name "results/results_seed_0/stable-diffusion/CompVis/stable-diffusion-v1-4/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt" 
+
+python benchmarking/artist_erasure.py --target "Van Gogh" --hook_module 'unet' --baseline 'uce' --model_id 'CompVis/stable-diffusion-v1-4' 
+python benchmarking/artist_erasure.py --target "Monet" --hook_module 'unet' --baseline 'uce' --model_id 'CompVis/stable-diffusion-v1-4' 
+python benchmarking/artist_erasure.py --target "Pablo Picasso" --hook_module 'unet' --baseline 'uce' --model_id 'CompVis/stable-diffusion-v1-4' 
+python benchmarking/artist_erasure.py --target "Salvador Dali" --hook_module 'unet' --baseline 'uce' --model_id 'CompVis/stable-diffusion-v1-4' 
+python benchmarking/artist_erasure.py --target "Leonardo Da Vinci" --hook_module 'unet' --baseline 'uce' --model_id 'CompVis/stable-diffusion-v1-4' 
