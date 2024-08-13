@@ -72,7 +72,7 @@ class CustomDatasetKeep(torch.utils.data.Dataset):
             if label not in labels_dict:
                 labels_dict[label] = 1
                 self.prompts.append((self.dataset[i][0], self.dataset[i][1], self.dataset[i][2]))
-            elif labels_dict[label] < 100:
+            elif labels_dict[label] < 500:
                 labels_dict[label] += 1
                 self.prompts.append((self.dataset[i][0], self.dataset[i][1], self.dataset[i][2]))
             print(labels_dict)
@@ -126,12 +126,7 @@ def main():
     for iter, (prompt, seed, label) in enumerate(dataloader):
         if args.dbg and iter > 10:
             break
-        # check if image is present in putput path
-        # if True:
-        # # os.path.exists(os.path.join(args.benchmarking_result_path, f"original_{iter * args.batch_size}.png")):
-        #     continue
 
-        # else:
         print(f"Prompt: {prompt}, Seed: {seed}, Label: {label}")
         prompt = prompt[0]
         label = label[0]
@@ -148,8 +143,8 @@ def main():
             image = image.to(args.gpu)
             with torch.no_grad():
                 output = classifier(image)
-
-            s, indices = torch.topk(output, 5)
+                
+            s, indices = torch.topk(output, 1)
             indices = indices.cpu().numpy()
             pred_labels = [weights.meta["categories"][idx] for idx in indices[0]]
             print(f"Predicted labels: {pred_labels}")
