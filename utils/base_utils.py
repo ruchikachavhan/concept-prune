@@ -37,7 +37,7 @@ def make_dirs(args):
     
 
 def get_sd_model(args):
-    if args.model_id in ['runwayml/stable-diffusion-v1-5', 'CompVis/stable-diffusion-v1-4']:
+    if args.model_id in ['runwayml/stable-diffusion-v1-5', 'CompVis/stable-diffusion-v1-4', 'stabilityai/stable-diffusion-2']:
         print("Loading from pre-trained model", args.model_id)
         model = StableDiffusionPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16)
 
@@ -50,7 +50,7 @@ def get_sd_model(args):
     elif args.hook_module == 'unet-ffn-1':
         num_layers = args.n_layers
         replace_fn = GEGLU
-    elif args.hook_module == 'attn_key':
+    elif args.hook_module in ['attn_key', 'attn_val']:
         num_layers = args.n_layers
         replace_fn = torch.nn.Linear
 
@@ -75,7 +75,7 @@ target_types_dict = {
     'Monet': 'art',
     'Pablo Picasso': 'art',
     'Salvador Dali': 'art',
-    'Leonardo da Vinci': 'art',
+    'Leonardo Da Vinci': 'art',
     'naked': 'naked',
     'cassette player': 'object',
     'chain saw': 'object',
@@ -88,7 +88,9 @@ target_types_dict = {
     'parachute': 'object',
     'french horn': 'object',    
     'female': 'gender',
-    'male': 'gender'
+    'male': 'gender',
+    'memorize': 'memorize',
+    'coco_memorize': 'memorize'
 }
 
 class Config:
@@ -98,8 +100,9 @@ class Config:
             config = yaml.load(f, Loader=yaml.FullLoader)
         self.config = config
         for key, value in config.items():
-            setattr(self, key, value)
-        
+            setattr(self, key, value)   
+
+    def configure(self): 
         if self.hook_module == 'unet':
             self.res_path = f'results/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
         elif self.hook_module == 'text':
@@ -108,9 +111,16 @@ class Config:
             self.res_path = f'results_FFN-1/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
         elif self.hook_module == 'attn_key':
             self.res_path = f'results_attn_key/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
+        elif self.hook_module == 'attn_val':
+            self.res_path = f'results_attn_val/results_seed_{self.seed}' + '/' + self.res_path.split('/')[1]
 
-    def configure(self): 
-        self.target_type = target_types_dict[self.target]    
+        if self.target.startswith('memorize'):
+            self.target_type = 'memorize'
+        elif self.target.startswith('coco_memorize') or self.target.startswith('tv_memorize') or self.target.startswith('mv_memorize') or self.target.startswith('cluster'):
+            self.target_type = 'memorize'
+        else:
+            self.target_type = target_types_dict[self.target]
+
         self.res_path = os.path.join(self.res_path, self.model_id, self.target)
         self.img_save_path = os.path.join(self.res_path, 'images')
         self.skilled_neuron_path = os.path.join(self.res_path, 'skilled_neurons', str(self.skill_ratio))

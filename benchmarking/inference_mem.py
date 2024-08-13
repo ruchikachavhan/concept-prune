@@ -224,7 +224,7 @@ def main():
 
     print("Results: ", results)
     # save the results
-    with open(f"{args.benchmarking_result_path}/random_results.json", "w") as f:
+    with open(f"{args.benchmarking_result_path}/results.json", "w") as f:
         json.dump(results, f)
 
 if __name__ == "__main__":

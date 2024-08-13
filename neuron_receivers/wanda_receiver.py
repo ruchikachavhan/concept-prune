@@ -9,7 +9,7 @@ class Wanda(BaseNeuronReceiver):
         super(Wanda, self).__init__(seed, replace_fn, keep_nsfw, hook_module)
         self.T = T
         self.n_layers = n_layers
-        if hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
+        if hook_module in ['unet', 'unet-ffn-1', 'attn_key', 'attn_val']:
             # create a dictionary to store activation norms for every time step and layer
             self.activation_norm = TimeLayerColumnNorm(T, n_layers)
         elif hook_module == 'text':

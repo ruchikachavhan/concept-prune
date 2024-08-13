@@ -59,7 +59,9 @@ def input_args():
     parser.add_argument('--dbg', type=bool, default=None)
     parser.add_argument('--target', type=str, default=None)
     parser.add_argument('--base', type=str, default=None)
+    parser.add_argument('--model_id', type=str, default=None)
     parser.add_argument('--skill_ratio', type=float, default=None)
+    parser.add_argument('--target_file', type=str, default=None)
     return parser.parse_args()
 
 

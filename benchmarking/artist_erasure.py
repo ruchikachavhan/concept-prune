@@ -8,16 +8,20 @@ from PIL import Image
 from argparse import ArgumentParser
 sys.path.append(os.getcwd())
 from utils import load_models
+from benchmarking_utils import set_benchmarking_path
 from diffusers import StableDiffusionPipeline, UNet2DConditionModel
 
 def input_args():
     parser = ArgumentParser()
     parser.add_argument('--gpu', type=int, default=0)
+    parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--dbg', type=bool, default=None)
     parser.add_argument('--target', type=str, default=None)
     parser.add_argument('--baseline', type=str, default=None)
     parser.add_argument('--hook_module', type=str, default='unet')
-    parser.add_argument('--benchmarking_result_path', type=str, default='results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/')
+    parser.add_argument('--ckpt_name', type=str, default=None)
+    parser.add_argument('--model_id', type=str, default='CompVis/stable-diffusion-v1-4')
+    parser.add_argument('--res_path', type=str, default='results/results_seed_0/stable-diffusion/')
     return parser.parse_args()
 
 class ArtistDataset(torch.utils.data.Dataset):
@@ -32,12 +36,14 @@ class ArtistDataset(torch.utils.data.Dataset):
         prompt = self.prompts[idx]
         seed = self.seeds[idx]
         return prompt,  seed
+    
 
 def main():
     args = input_args()
     print("Arguments: ", args.__dict__)
 
-    args.benchmarking_result_path = os.path.join(args.benchmarking_result_path, args.target, args.baseline, 'benchmarking')
+    args.benchmarking_result_path = set_benchmarking_path(args)
+    args.benchmarking_result_path = os.path.join(args.benchmarking_result_path, args.model_id, args.target, args.baseline, 'benchmarking', 'concept_erase')
     print("Benchmarking result path: ", args.benchmarking_result_path)
     if not os.path.exists(args.benchmarking_result_path):
         os.makedirs(args.benchmarking_result_path)
@@ -55,17 +61,17 @@ def main():
         print("Saving images after removal of concept")
         
         # Load original SD model
-        model = StableDiffusionPipeline.from_pretrained('runwayml/stable-diffusion-v1-5', torch_dtype=torch.float16)
+        model = StableDiffusionPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16)
         model = model.to(args.gpu)
 
         # Load concept erased model
-        remover_model = load_models(args)
+        remover_model = load_models(args, args.ckpt_name)
         print("Remover model: ", remover_model)
 
         for i, (prompt, seed) in enumerate(dataloader):
             prompt = prompt[0]
             print(f"Prompt: {prompt}, Seed: {seed}")
-            
+            seed =[0]
             torch.manual_seed(seed[0])
             np.random.seed(seed[0])
             removal_images = remover_model(prompt).images[0]
@@ -75,6 +81,7 @@ def main():
             original_images = model(prompt).images[0]
 
             # save both images
+            print(f"Saving images for prompt {i}", f'{args.benchmarking_result_path}/concept_erase/removal_{i}.jpg', f'{args.benchmarking_result_path}/concept_erase/original_{i}.jpg')
             removal_images.save(f'{args.benchmarking_result_path}/concept_erase/removal_{i}.jpg')
             original_images.save(f'{args.benchmarking_result_path}/concept_erase/original_{i}.jpg')
     
@@ -125,7 +132,8 @@ def main():
     results['avg_score'] = avg_score
     results['std_similarity'] = np.std(similarity)
     results['std_score'] = np.std(scores)
-    with open(f'{args.benchmarking_result_path}/concept_erase/clip_scores.json', 'w') as f:
+    p = args.ckpt_name.split('/')[-1].split('.pt')[0] if args.ckpt_name is not None else 'concept-prune'
+    with open(f'{args.benchmarking_result_path}/concept_erase/clip_scores_{p}_VG.json', 'w') as f:
         json.dump(results, f)
 
         

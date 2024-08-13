@@ -11,6 +11,8 @@ sys.path.append(os.getcwd())
 from utils import get_prompts, Config, get_sd_model
 from neuron_receivers import Wanda
 from transformers.models.clip.modeling_clip import CLIPMLP
+from torch.profiler import profile, record_function, ProfilerActivity
+
 
 def input_args():
     parser = ArgumentParser()
@@ -18,7 +20,10 @@ def input_args():
     parser.add_argument('--dbg', type=bool, default=None)
     parser.add_argument('--target', type=str, default=None)
     parser.add_argument('--base', type=str, default=None)
+    parser.add_argument('--model_id', type=str, default=None)
     parser.add_argument('--skill_ratio', type=float, default=None)
+    parser.add_argument('--target_file', type=str, default=None)
+    parser.add_argument('--hook_module', type=str, default=None)
     return parser.parse_args()
 
 
@@ -30,6 +35,7 @@ def main():
         if value is not None:
             print(f"Updating {key} with {value}")
             setattr(args, key, value)
+    
     args.configure()
 
     print("Arguments: ", args.__dict__)
@@ -42,7 +48,7 @@ def main():
     args.replace_fn = replace_fn
     print("Replace fn: ", replace_fn)
     model = model.to(args.gpu)
-    print("Model: ", model)
+    print("Model: ", model.unet)
 
     # get the absolute value of FFN weights in the second layer
     abs_weights = {}
@@ -78,6 +84,17 @@ def main():
                 print("Storing absolute value of: ", name, module.weight.shape)
         # sort the layer names so that mid block is before up block
         layer_names.sort()
+    
+    elif args.hook_module == 'attn_val':
+        for name, module in model.unet.named_modules():
+            # Key of Cross attention (attn2)
+            if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_v' in name:
+                layer_names.append(name)
+                weight = module.weight.detach()
+                abs_weights[name] = weight.abs().cpu()
+                print("Storing absolute value of: ", name, module.weight.shape)
+        # sort the layer names so that mid block is before up block
+        layer_names.sort()
 
     elif args.hook_module == 'text':
         for name, module in model.text_encoder.named_modules():
@@ -92,6 +109,8 @@ def main():
     neuron_receiver_base = Wanda(args.seed, args.timesteps, num_layers, replace_fn = args.replace_fn, keep_nsfw = args.keep_nsfw, hook_module=args.hook_module)
     neuron_receiver_target = Wanda(args.seed, args.timesteps, num_layers, replace_fn = args.replace_fn, keep_nsfw = args.keep_nsfw, hook_module=args.hook_module)
 
+    # with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+    #     with record_function("model_inference"):
     if not os.path.exists(os.path.join(args.res_path, 'base_norms.pt')):
         # Saving norm values
         iter = 0
@@ -106,7 +125,7 @@ def main():
                 neuron_receiver_base.seed = seed
                 neuron_receiver_target.seed = seed
                 print("Seed: ", seed)
-           
+        
             neuron_receiver_base.reset_time_layer()
             out = neuron_receiver_base.observe_activation(model, ann)
 
@@ -122,7 +141,7 @@ def main():
             iter += 1
         
         # get the norms
-        if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
+        if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key', 'attn_val']:
             act_norms_base = neuron_receiver_base.activation_norm.get_column_norms()
             act_norms_target = neuron_receiver_target.activation_norm.get_column_norms()
             # save
@@ -146,7 +165,6 @@ def main():
     else:
         act_norms_base = torch.load(os.path.join(args.res_path, 'base_norms.pt'))
         act_norms_target = torch.load(os.path.join(args.res_path, 'target_norms.pt'))
-
 
     sparsity_ratio = args.skill_ratio
     # hack for the score calculation to be the same
@@ -181,6 +199,7 @@ def main():
             binary_mask = torch.zeros_like(abs_weights[layer_names[l]])
             diff = metric_target > metric_base
             binary_mask = diff * binary_mask_target
+
             binary_mask = binary_mask.float()
 
             # convert binary mask to array
@@ -191,6 +210,9 @@ def main():
             # save in pickle file
             with open(os.path.join(args.skilled_neuron_path, f'timestep_{t}_layer_{l}.pkl'), 'wb') as f:
                 pickle.dump(binary_mask, f) 
+
+# print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+    print("Saved norms in: ", os.path.join(args.res_path, 'base_norms.pt'))
 
 if __name__ == '__main__':
     main()

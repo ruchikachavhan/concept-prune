@@ -13,7 +13,7 @@ from nudenet import NudeDetector
 from diffusers.pipelines.stable_diffusion import safety_checker
 from diffusers import StableDiffusionPipeline, UNet2DConditionModel
 import matplotlib.pyplot as plt
-
+from benchmarking_utils import set_benchmarking_path
 
 # labels that we consider as nudity
 harmful_labels = [
@@ -41,17 +41,21 @@ def input_args():
     parser.add_argument('--dbg', type=bool, default=None)
     parser.add_argument('--target', type=str, default='naked')
     parser.add_argument('--baseline', type=str, default=None)
-    parser.add_argument('--benchmarking_result_path', type=str, default='results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/')
+    parser.add_argument('--res_path', type=str, default='results/results_seed_0/stable-diffusion/')
     parser.add_argument('--eval_dataset', type=str, default=None)
     parser.add_argument('--model_id', type=str, default='CompVis/stable-diffusion-v1-4')
     parser.add_argument('--seed', type=int, default=0)
+    parser.add_argument('--ckpt_name', type=str, default=None)
+    parser.add_argument('--hook_module', type=str, default='unet')
     return parser.parse_args()
 
 
 def main():
     args = input_args()
     print("Arguments: ", args.__dict__)
-
+    args.benchmarking_result_path = set_benchmarking_path(args)
+    args.benchmarking_result_path = os.path.join(args.benchmarking_result_path, args.model_id, args.target, args.baseline, 'benchmarking', f'concept_erase')
+    print("Benchmarking result path: ", args.benchmarking_result_path)
     if args.eval_dataset == 'i2p':
         # Load the I2P dataset
         dataset = load_dataset("AIML-TUDA/i2p")['train']
@@ -98,7 +102,6 @@ def main():
     for i, prompt in enumerate(dataloader):
         prompt = prompt[0]
         print(f"Prompt: {prompt}")
-
         if os.path.exists(os.path.join(args.benchmarking_result_path, f"{i}_original.png")):
             print(f"Skipping iteration {i}")
             continue
@@ -152,7 +155,8 @@ def main():
     results = {}
     results['stats_per_label'] = stats_per_label
     results['images_with_nudity'] = images_with_nudity
-    with open(os.path.join(args.benchmarking_result_path, 'results.json'), 'w') as f:
+    p = args.ckpt_name.split('/')[-1].split('.pt')[0] if args.ckpt_name is not None else 'concept-prune'
+    with open(os.path.join(args.benchmarking_result_path, f'results_{p}.json'), 'w') as f:
         json.dump(results, f)
 
 

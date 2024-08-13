@@ -101,6 +101,14 @@ class NeuronRemover(BaseNeuronReceiver):
                     num_modules += 1
                     hooks.append(hook)
 
+        elif self.hook_module == 'attn_val':
+            num_modules = 0
+            for name, module in model.unet.named_modules():
+                if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_v' in name:
+                    hook = module.register_forward_hook(self.unet_hook_fn)
+                    num_modules += 1
+                    hooks.append(hook)
+
         elif self.hook_module == 'text':
             num_modules = 0
             for name, module in model.text_encoder.named_modules():

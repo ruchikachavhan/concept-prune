@@ -59,6 +59,9 @@ To obtain a pruned model for a concept ```<target>```, run the following -
 
     &nbsp; 4. Gender reversal - ```male, female```. Example - base prompt = ```a son``` and target prompt = ```a daughter``` for female to male reversal.
 
+    &nbsp; 5. Memorization - ```memorize_$i$```. For this concept, prompts are loaded from corresponding to datasets/memorize_0.txt. Please pass ```--target_file memorize_$i$``` for this concept.
+
+
     The argument ```skill_ratio``` denotes the sparsity level which defines the top-k% neurons considered for WANDA pruning. This command saves skilled neurons discovered for every timestep and layer in a different .pkl file as a sparse matrix. 
 
 
@@ -96,7 +99,7 @@ We will provide checkpoints on Hugging Face soon!
 
     To evaluate artist style erasure for ```Van Gogh, Monet, Pablo Picasso, Da Vinci, Salvador Dali`` for ConceptPrune, run 
     ```
-    python benchmarking/artist_erasure.py --target <target> --baseline concept-prune
+    python benchmarking/artist_erasure.py --target <target> --baseline concept-prune --ckpt_name <path to checkpoint>
     ```
     We created a dataset of 50 prompts using ChatGPT for different artists such that each prompt contains the painting name along with the name of the artist. These propmts are available in ```datasets/```. The script saves images  and a json files with CLIP metric reported in the paper in the ```results/``` folder.
 
@@ -104,7 +107,7 @@ We will provide checkpoints on Hugging Face soon!
 
     To evaluate nudity erasure with ConceptPrune on the I2P dataset, run
     ```
-    python benchmarking/nudity_eval.py --eval_dataset i2p --baseline 'concept-prune' --gpu 0
+    python benchmarking/nudity_eval.py --eval_dataset i2p --baseline 'concept-prune' --gpu 0 --ckpt_name <path to checkpoint>
     ```
 
     To run ConceptPrune on black-box adversarial prompt datasets, [MMA](https://openaccess.thecvf.com/content/CVPR2024/papers/Yang_MMA-Diffusion_MultiModal_Attack_on_Diffusion_Models_CVPR_2024_paper.pdf) and [Ring-A-Bell](https://arxiv.org/abs/2310.10012), replace ```i2p``` with ```mma``` and ```ring-a-bell``` respectively.
@@ -116,12 +119,12 @@ We will provide checkpoints on Hugging Face soon!
 
     To evaluate object erasure with ConceptPrune, run
     ```
-    python benchmarking/object_erase.py --target <object> --baseline concept-prune --removal_mode erase
+    python benchmarking/object_erase.py --target <object> --baseline concept-prune --removal_mode erase --ckpt_name <path to checkpoint>
     ```
     
     To check interference of concept removal with unrelated classes, run
     ```
-    python benchmarking/object_erase.py --target <object> --baseline concept-prune --removal_mode keep
+    python benchmarking/object_erase.py --target <object> --baseline concept-prune --removal_mode keep --ckpt_name <path to checkpoint>
     ```
 
     where ```<object>``` is the name of a class in ImageNette classes.  he script saves images and a json files with ResNet50 accuracies reported in the paper in the ```results/``` folder.
@@ -132,7 +135,7 @@ We will provide checkpoints on Hugging Face soon!
     To evaluate gender reversal from Female to Male, run
 
     ```
-    python benchmarking/gender_reversal.py --target male
+    python benchmarking/gender_reversal.py --target male --ckpt_name <path to checkpoint>
     ```
 
     Replace ```male``` with ```female``` to reverse gender from Male to Female. We calculate the success of gender reversal using CLIP to classify between males females. The script saves images in the ```results/``` folder for 250 seeds.
@@ -144,10 +147,18 @@ We will provide checkpoints on Hugging Face soon!
     To evaluate ConceptPrune on COCO dataset, run
 
     ```
-    python benchmarking/eval_coco.py --target <target> --baseline concept-prune
+    python benchmarking/eval_coco.py --target <target> --baseline concept-prune --ckpt_name <path to checkpoint>
+    ``` 
+
+5. Memorization
+
+    To evaluate ConceptPrune on COCO dataset, run
+
     ```
+    python benchmarking/inference_mem.py --target memorize_$i$ --baseline concept-prune --ckpt_name <path to checkpoint>
+    ``` 
 
-
+    This will save images and calculate SSCD and CLIP score and store the results in a json file. We run this script for 10 different seeds for every model and report average performance.
 
 
 ### Cite us!
@@ -157,6 +168,15 @@ If you find our paper useful, please consider citing our work.
 @article{chavhan2024conceptpruneconcepteditingdiffusion,
       title={ConceptPrune: Concept Editing in Diffusion Models via Skilled Neuron Pruning}, 
       author={Ruchika Chavhan and Da Li and Timothy Hospedales},
+      year={2024},
+      journal={ArXiv}
+}
+```
+
+```
+@article{chavhan2024conceptpruneconcepteditingdiffusion,
+      title={Memorized Images in Diffusion Models share a Subspace that can be Located and Deleted}, 
+      author={Ruchika Chavhan and  Ondrej Bohdal and Yongshuo Zong and Da Li and Timothy Hospedales},
       year={2024},
       journal={ArXiv}
 }

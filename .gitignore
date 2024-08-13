@@ -4,3 +4,5 @@ test_images/*
 results_FFN-1/*
 results*
 results_attn_key/*
+wanda/train_test_same.py
+notebooks/*

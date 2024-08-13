@@ -106,10 +106,7 @@ def main():
                     # load sparse matrix
                     indices = pickle.load(f)
                     # take union
-                    # out of the sparse matrix, only select 50% elements that are 1
                     indices = indices.toarray()
-                    # select only 50% of the indices
-                    # indices = indices * (np.random.rand(*indices.shape) < 0.5)
                     union_concepts[layer_names[l]] += scipy.sparse.csr_matrix(indices)
             union_concepts[layer_names[l]] = union_concepts[layer_names[l]] > (args.select_ratio * args.timesteps)
             array = union_concepts[layer_names[l]].astype('bool').astype('int')

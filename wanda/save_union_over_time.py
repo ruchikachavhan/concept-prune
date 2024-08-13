@@ -4,6 +4,7 @@ import scipy
 import pickle
 import torch
 import sys
+import random
 import tqdm
 import numpy as np
 from argparse import ArgumentParser
@@ -21,6 +22,9 @@ def input_args():
     parser.add_argument('--skill_ratio', type=float, default=None)
     parser.add_argument('--timesteps', type=int, default=None)
     parser.add_argument('--select_ratio', type=float, default=None)
+    parser.add_argument('--model_id', type=str, default=None)
+    parser.add_argument('--target_file', type=str, default=None)
+    parser.add_argument('--hook_module', type=str, default=None)
     return parser.parse_args()
 
 
@@ -64,6 +68,14 @@ def main():
         # sort keys in alphabetical order and ensure that the order is consistent
         weights_shape = dict(sorted(weights_shape.items()))
         layer_names = list(weights_shape.keys())
+    
+    elif args.hook_module == 'attn_val':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_v' in name:
+                weights_shape[name] = module.weight.shape
+        # sort keys in alphabetical order and ensure that the order is consistent
+        weights_shape = dict(sorted(weights_shape.items()))
+        layer_names = list(weights_shape.keys())
 
     elif args.hook_module == 'text':
         for name, module in model.text_encoder.named_modules():
@@ -86,8 +98,8 @@ def main():
                 # load sparse matrix
                 indices = pickle.load(f)
                 # take union
-                # out of the sparse matrix, only select 50% elements that are 1
                 indices = indices.toarray()
+                print("Indices shape: ", indices.shape)
                 union_concepts[layer_names[l]] += scipy.sparse.csr_matrix(indices)
         union_concepts[layer_names[l]] = union_concepts[layer_names[l]] > (args.select_ratio * args.timesteps)
         array = union_concepts[layer_names[l]].astype('bool').astype('int')
@@ -118,6 +130,13 @@ def main():
                 weight *= (1- masks[name])
                 weight = weight.to(torch.float16)
                 module.weight.data = weight
+    elif args.hook_module == 'attn_val':
+        for name, module in model.unet.named_modules():
+            if isinstance(module, torch.nn.Linear) and 'attn2' in name and 'to_v' in name:
+                weight = module.weight.data.clone().detach().cpu()
+                weight *= (1- masks[name])
+                weight = weight.to(torch.float16)
+                module.weight.data = weight
     elif args.hook_module == 'text':
         for name, module in model.text_encoder.named_modules():
             if isinstance(module, torch.nn.Linear) and 'mlp' in name and 'encoder.layers' in name and 'fc2' in name:
@@ -129,7 +148,7 @@ def main():
 
     # save the model
     ckpt_name = os.path.join(args.checkpoint_path, f'skill_ratio_{args.skill_ratio}_timesteps_{args.timesteps}_threshold{args.select_ratio}.pt')
-    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
+    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key', 'attn_val']:
         torch.save(model.unet.state_dict(), ckpt_name)
     elif args.hook_module == 'text':
         torch.save(model.text_encoder.state_dict(), ckpt_name)
@@ -141,7 +160,7 @@ def main():
     _, target_prompts = get_prompts(args)
 
     # load the masked model
-    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key']:
+    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key', 'attn_val']:
         unet = UNet2DConditionModel.from_pretrained(args.model_id, subfolder="unet", torch_dtype=torch.float16)
         unet.load_state_dict(torch.load(ckpt_name))
         model = StableDiffusionPipeline.from_pretrained(args.model_id, unet=unet, torch_dtype=torch.float16)
@@ -152,15 +171,15 @@ def main():
     model = model.to('cuda')
 
     # test new model on the target prompts
-    test_img_save_path = os.path.join(args.checkpoint_path, f'skill_ratio_{args.skill_ratio}_timesteps_{args.timesteps}_threshold{args.select_ratio}', 'test_images')
-    if not os.path.exists(test_img_save_path):
-        os.makedirs(test_img_save_path)
-    for ann_target in target_prompts:
-        print("Testing on target prompt: ", ann_target)
-        torch.manual_seed(args.seed)
-        np.random.seed(args.seed)
-        out = model(ann_target).images[0]
-        out.save(os.path.join(test_img_save_path, f'{ann_target}.png'))
+    # test_img_save_path = os.path.join(args.checkpoint_path, f'skill_ratio_{args.skill_ratio}_timesteps_{args.timesteps}_threshold{args.select_ratio}', 'test_images')
+    # if not os.path.exists(test_img_save_path):
+    #     os.makedirs(test_img_save_path)
+    # for ann_target in target_prompts:
+    #     print("Testing on target prompt: ", ann_target)
+    #     torch.manual_seed(args.seed)
+    #     np.random.seed(args.seed)
+    #     out = model(ann_target).images[0]
+    #     out.save(os.path.join(test_img_save_path, f'{ann_target}.png'))
 
 
 if __name__ == '__main__':

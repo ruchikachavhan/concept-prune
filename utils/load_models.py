@@ -13,10 +13,10 @@ uce_models_dict = {
 
 concept_ablation_dict = {
     'Van Gogh': '../concept-ablation/diffusers/logs_ablation/vangogh/delta.bin',
-    'Monet': '../concept-ablation/diffusers/logs_ablation/monet/delta.bin',
-    'Pablo Picasso': '../concept-ablation/diffusers/logs_ablation/picasso/delta.bin',
-    'Salvador Dali': '../concept-ablation/diffusers/logs_ablation/salvador_dali/delta.bin',
-    'Leonardo Da Vinci': '../concept-ablation/diffusers/logs_ablation/davinci/delta.bin',
+    'Monet': '../concept-ablation/diffusers/logs_ablation/vangogh/delta.bin',
+    'Pablo Picasso': '../concept-ablation/diffusers/logs_ablation/vangogh/delta.bin',
+    'Salvador Dali': '../concept-ablation/diffusers/logs_ablation/vangogh/delta.bin',
+    'Leonardo Da Vinci': '../concept-ablation/diffusers/logs_ablation/vangogh/delta.bin',
 }
 
 esd_models_dict = {
@@ -43,8 +43,10 @@ best_ckpt_dict = {
     'english springer': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/english springer/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'tench': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/tench/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'gas pump': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/gas pump/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'church': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/church/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'female': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/female/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
-    'male': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt"
+    'male': "results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
+    'memorize_0': 'results/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/memorize_0/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt',
 }
 
 best_ckpt_dict_text = {
@@ -64,17 +66,18 @@ best_ckpt_dict_text = {
     'tench': 'results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/tench/checkpoints/skill_ratio_0.02_timesteps_1_threshold0.0.pt',
     'gas pump': 'results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/gas pump/checkpoints/skill_ratio_0.02_timesteps_1_threshold0.0.pt',
     'female': "results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/female/checkpoints/skill_ratio_0.02_timesteps_1_threshold0.0.pt",
-    'male': "results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.02_timesteps_1_threshold0.0.pt"
+    'male': "results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.02_timesteps_1_threshold0.0.pt",
+    'memorize_0': 'results_CLIP/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/memorize_0/checkpoints/skill_ratio_0.01_timesteps_1_threshold0.0.pt',
 }
 
 
 best_ckpt_dict_ffn_1 = {
-    'Van Gogh': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
+    'Van Gogh': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'Monet': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Monet/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
     'Pablo Picasso': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Pablo Picasso/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
     'Salvador Dali': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Salvador Dali/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
     'Leonardo Da Vinci': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Leonardo Da Vinci/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
-    'naked': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/naked/checkpoints/skill_ratio_0.02_timesteps_9_threshold0.0.pt',
+    'naked': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/naked/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'parachute': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/parachute/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'cassette player': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/cassette player/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'golf ball': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/golf ball/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
@@ -85,16 +88,17 @@ best_ckpt_dict_ffn_1 = {
     'tench': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/tench/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'gas pump': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/gas pump/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'female': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/female/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
-    'male': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt"
+    'male': "results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
+    'memorize_0': 'results_FFN-1/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/memorize_0/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt',
 }
 
 best_ckpt_dict_attn_key = {
-    'Van Gogh': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.003_timesteps_10_threshold0.0.pt",
+    'Van Gogh': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'Monet': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Monet/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'Pablo Picasso': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Pablo Picasso/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'Salvador Dali': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Salvador Dali/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
     'Leonardo Da Vinci': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Leonardo Da Vinci/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
-    'naked': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/naked/checkpoints/skill_ratio_0.01_timesteps_9_threshold0.0.pt',
+    'naked': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/naked/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt',
     'parachute': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/parachute/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'cassette player': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/cassette player/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'golf ball': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/golf ball/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
@@ -105,7 +109,29 @@ best_ckpt_dict_attn_key = {
     'tench': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/tench/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'gas pump': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/gas pump/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
     'female': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/female/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
-    'male': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt"
+    'male': "results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
+    'memorize_0': 'results_attn_key/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/memorize_0/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt',
+}
+
+best_ckpt_dict_attn_val = {
+    'Van Gogh': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Van Gogh/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
+    'Monet': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Monet/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
+    'Pablo Picasso': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Pablo Picasso/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
+    'Salvador Dali': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Salvador Dali/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
+    'Leonardo Da Vinci': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/Leonardo Da Vinci/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt",
+    'naked': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/naked/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'parachute': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/parachute/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'cassette player': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/cassette player/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'golf ball': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/golf ball/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'french horn': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/french horn/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'garbage truck': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/garbage truck/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'chain saw': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/chain saw/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'english springer': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/english springer/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'tench': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/tench/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'gas pump': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/gas pump/checkpoints/skill_ratio_0.02_timesteps_10_threshold0.0.pt',
+    'female': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/female/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
+    'male': "results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/male/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt",
+    'memorize_0': 'results_attn_val/results_seed_0/stable-diffusion/runwayml/stable-diffusion-v1-5/memorize_0/checkpoints/skill_ratio_0.01_timesteps_10_threshold0.0.pt',
 }
 
 all_models_dict = {
@@ -116,27 +142,38 @@ all_models_dict = {
 }
 
 
-def load_models(args):
+def load_models(args, ckpt_name=None):
 
-    if args.hook_module == 'text':
-        all_models_dict['concept-prune'] = best_ckpt_dict_text
-    elif args.hook_module == 'unet-ffn-1':
-        all_models_dict['concept-prune'] = best_ckpt_dict_ffn_1
+    if ckpt_name is None:
+        if args.hook_module == 'text':
+            all_models_dict['concept-prune'] = best_ckpt_dict_text
+        elif args.hook_module == 'unet-ffn-1':
+            all_models_dict['concept-prune'] = best_ckpt_dict_ffn_1
+        elif args.hook_module == 'attn_key':
+            all_models_dict['concept-prune'] = best_ckpt_dict_attn_key
+        elif args.hook_module == 'attn_val':
+            all_models_dict['concept-prune'] = best_ckpt_dict_attn_val
+    else:
+        all_models_dict['concept-prune'] = {args.target: ckpt_name}
 
-    if args.hook_module in ['unet', 'unet-ffn-1']:
+    print(f"Loading model from {all_models_dict[args.baseline][args.target]}")
+
+
+    if args.hook_module in ['unet', 'unet-ffn-1', 'attn_key', 'attn_val']:
         if args.baseline in ['uce', 'esd']:
             # load a baseline model and fine tune it
-            unet = UNet2DConditionModel.from_pretrained('CompVis/stable-diffusion-v1-4', subfolder="unet", torch_dtype=torch.float16)
+            print(f"Loading model from {all_models_dict[args.baseline][args.target]}")
+            unet = UNet2DConditionModel.from_pretrained(args.model_id, subfolder="unet", torch_dtype=torch.float16)
             unet.load_state_dict(torch.load(all_models_dict[args.baseline][args.target]))
-            remover_model = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4', unet=unet, torch_dtype=torch.float16)
+            remover_model = StableDiffusionPipeline.from_pretrained(args.model_id, unet=unet, torch_dtype=torch.float16)
             remover_model = remover_model.to(args.gpu)
         elif args.baseline == 'concept-prune':
-            unet = UNet2DConditionModel.from_pretrained('runwayml/stable-diffusion-v1-5', subfolder="unet", torch_dtype=torch.float16)
+            unet = UNet2DConditionModel.from_pretrained(args.model_id, subfolder="unet", torch_dtype=torch.float16)
             unet.load_state_dict(torch.load(all_models_dict[args.baseline][args.target]))
-            remover_model = StableDiffusionPipeline.from_pretrained('runwayml/stable-diffusion-v1-5', unet=unet, torch_dtype=torch.float16)
+            remover_model = StableDiffusionPipeline.from_pretrained(args.model_id, unet=unet, torch_dtype=torch.float16)
             remover_model = remover_model.to(args.gpu)
         elif args.baseline == 'concept-ablation':
-            remover_model = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", torch_dtype=torch.float16)
+            remover_model = StableDiffusionPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16)
             remover_model = remover_model.to(args.gpu)
             model_path = os.path.join(all_models_dict[args.baseline][args.target])
             print(f"Loading model from {model_path}")
@@ -146,6 +183,9 @@ def load_models(args):
             for name, params in remover_model.unet.named_parameters():
                 if name in model_ckpt['unet']:
                     params.data.copy_(model_ckpt['unet'][f'{name}'])
+        elif args.baseline == 'baseline':
+            remover_model = StableDiffusionPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16)
+            remover_model = remover_model.to(args.gpu)
         else:
             raise ValueError(f"Invalid baseline: {args.baseline}")
     elif args.hook_module == 'text':
